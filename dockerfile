@@ -19,8 +19,9 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader
 
 # Configurar permisos
-RUN chown -R www-data:www-data storage bootstrap/cache
 
+RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 # Generar clave de aplicación y cachear configuraciones
 RUN php artisan key:generate --force
 RUN php artisan config:cache
@@ -33,4 +34,5 @@ EXPOSE 80
 
 # Iniciar Apache
 CMD ["apache2-foreground"]
-RUN mkdir -p storage bootstrap/cache && chown -R www-data:www-data storage bootstrap/cache
+
+
