@@ -1,5 +1,5 @@
 # Usar una imagen base de PHP con Apache
-FROM php:8.1-apache
+FROM php:8.2-fpm
 
 # Instalar extensiones necesarias
 RUN apt-get update && apt-get install -y \
@@ -29,6 +29,7 @@ RUN php artisan view:cache
 
 # Exponer el puerto de Apache
 EXPOSE 80
+
 
 # Iniciar Apache
 CMD ["apache2-foreground"]
