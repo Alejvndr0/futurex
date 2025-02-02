@@ -33,3 +33,4 @@ EXPOSE 80
 
 # Iniciar Apache
 CMD ["apache2-foreground"]
+RUN mkdir -p storage bootstrap/cache && chown -R www-data:www-data storage bootstrap/cache
