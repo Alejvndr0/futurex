@@ -1,32 +1,23 @@
 #!/bin/bash
-# render-build.sh
+set -eux  # Habilita error inmediato y modo detallado
 
-# Instala dependencias de Composer
+# Instalar dependencias de Laravel
 composer install --no-dev --optimize-autoloader
 
-# Genera la clave de la aplicación (si no está configurada)
-php artisan key:generate --force
+# Verificar si la clave de la aplicación ya existe
+if ! grep -q "APP_KEY=" .env || [[ -z "$(grep APP_KEY .env | cut -d '=' -f2)" ]]; then
+    php artisan key:generate --force
+fi
 
-# Optimiza la aplicación para producción
+# Optimización para producción
 php artisan optimize:clear
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-#!/usr/bin/env bash
-set -eux
-
-# Instalar PHP 8.1
-if ! command -v php8.1 &> /dev/null
-then
-    sudo apt update
-    sudo apt install -y php8.1 php8.1-cli php8.1-mbstring php8.1-xml php8.1-curl php8.1-zip php8.1-bcmath php8.1-tokenizer php8.1-mysql
+# Instalar dependencias de frontend y compilar assets si usa Vite/Webpack
+if [ -f "package.json" ]; then
+    yarn install --frozen-lockfile
+    yarn build
 fi
 
-# Usar PHP 8.1 como predeterminado
-sudo update-alternatives --set php /usr/bin/php8.1
-
-# Ejecutar el build
-
-yarn install
-yarn build
